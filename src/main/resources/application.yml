@@ -1,0 +1,75 @@
+spring:
+  application:
+    name: ai-agent
+  ai:
+    dashscope:
+      chat:
+        options:
+          model: qwen-plus
+    mcp:
+      client:
+        sse:
+          connections:
+            server1:
+              url: http://localhost:8127
+      #        stdio:
+      #          servers-configuration: classpath:mcp-servers.json
+      server:
+        name: webflux-mcp-server
+        version: 1.0.0
+        type: ASYNC  # 异步
+        sse-message-endpoint: /mcp/messages # SSE 消息端点路径
+        sse-endpoint: /sse                  # SSE 端点路径
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        dimensions: 1536
+        distance-type: COSINE_DISTANCE
+        max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
+  # mail
+  mail:
+    host: smtp.126.com
+    username: MossChat@126.com
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          stattls:
+            required: true
+          ssl:
+            enable: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+    port: 465
+    protocol: smtp
+    default-encoding: UTF-8
+  endpoints:
+    enabled: false
+server:
+  port: 7123
+  servlet:
+    context-path: /api
+
+# springdoc-openapi
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.ai.aiagent.controller
+# knife4j
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor: debug
